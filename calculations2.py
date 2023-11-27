@@ -14,12 +14,13 @@ class Calculations:
         self.ship2 = ship2
 
     def calculation(self):
+        print("начальное здоровье: ", self.ship1.health, "против ", self.ship2.health)
         while self.ship1.health >= 0 and self.ship2.health >= 0:
-            self.ship1.health = self.ship1.health - self.ship2.damage
-            self.ship2.health = self.ship2.health - self.ship1.damage
+            self.ship1.health -= self.ship2.damage
+            self.ship2.health -= self.ship1.damage
             print(self.ship1.health, self.ship2.health) # проверка кто быстрее погибает по раундам
 
-        print(self.ship1.health, self.ship2.health) # выясняем победителя
+        print("конечное здоровье: ", self.ship1.health, "против ", self.ship2.health) # выясняем победителя
 
 def main():
     ship1 = Ship()
