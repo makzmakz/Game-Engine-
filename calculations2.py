@@ -8,6 +8,7 @@ class Ship:
 class Player:
     def __init__(self):
         self.ships = self.create_army()
+        self.dead_ships = []
 
     def create_army(self):
         ships = []
@@ -53,17 +54,29 @@ class Calculations:
                 ship_counter += 1
             player_counter += 1
 
+    def check_on_is_ship_alive(self):
+        # необходимо сделать проверку здоровья для случайной стрельбы
+        # механизм должен удалять уничтоженные корабли и помнить их для статистики
+        for player in self.players:
+            for ship in player.ships:
+                ship_counter = 0
+                if ship.health < 1:
+                    print("корабль", ship_counter + 1, "уничтожен")
+                    player.ships.remove(ship)
+                    player.dead_ships.append(ship)
+                ship_counter += 1
+                print(ship.health) # проверка доступа
+            print(len(player.ships)) # проверка доступа
+
     def calculation(self):
         self.state_of_battle(bool(1))
 
-        '''while (self.players[0].ships[0].health or self.players[0].ships[1].health) >= 0 \
+
+        """while (self.players[0].ships[0].health or self.players[0].ships[1].health) >= 0 \
                 and (self.players[1].ships[0].health or self.players[1].ships[1].health) >= 0:
 
-            # необходимо сделать проверку здоровья для случайной стрельбы
-            for player in self.players:
-                ships = player.ships
-                for ship in ships:
-                    print(ship.health)
+            # проверка здоровья
+            self.check_on_is_ship_alive()
 
             # стрельба по случайному кораблю противника для первого игрока
             if (self.players[1].ships[0].health, self.players[1].ships[1].health) >= 0:
@@ -94,17 +107,15 @@ class Calculations:
             # проверка кто быстрее погибает по раундам
             print(self.players[0].ships[0].health, self.players[0].ships[1].health,
                   self.players[1].ships[0].health, self.players[1].ships[1].health)
-'''
 
+"""
         # выясняем победителя
         self.state_of_battle(bool(0))
 
 
 def main():
-
     calculation = Calculations()
     calculation.calculation()
-
 
 
 if __name__ == "__main__":
