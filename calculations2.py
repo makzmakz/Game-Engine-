@@ -46,10 +46,9 @@ class Calculations:
                 pass
             else:
                 print("против ")
-            ships = player.ships
             ship_counter = 0
             print("игрок", player_counter + 1)
-            for ship in ships:
+            for ship in player.ships:
                 print("корабль", ship_counter + 1, ship.health)
                 ship_counter += 1
             player_counter += 1
