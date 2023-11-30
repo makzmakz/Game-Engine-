@@ -22,6 +22,7 @@ class Player:
 class Calculations:
     def __init__(self):
         self.players = self.create_players()
+        self.dead_players = []
 
     def create_players(self):
         players = []
@@ -56,7 +57,7 @@ class Calculations:
 
     def check_on_is_ship_alive(self):
         # необходимо сделать проверку здоровья для случайной стрельбы
-        # механизм должен удалять уничтоженные корабли и помнить их для статистики
+        # уничтоженные корабли сохраняются для статистики
         for player in self.players:
             for ship in player.ships:
                 ship_counter = 0
@@ -68,24 +69,34 @@ class Calculations:
                 print(ship.health) # проверка доступа
             print(len(player.ships)) # проверка доступа
 
-    def calculation(self):
-        self.state_of_battle(bool(1))
-
-
-        """while (self.players[0].ships[0].health or self.players[0].ships[1].health) >= 0 \
-                and (self.players[1].ships[0].health or self.players[1].ships[1].health) >= 0:
+    # TO DO
+    # необходимо будет проверить логику цикла на производительность
+    def battle_cycle(self):
+        is_not_battle_over = True
+        while is_not_battle_over:
+            # если игрок теряет все корабли он проигрывает
+            # если игроков становится меньше 2 игра заканчивается
+            # мертвые игроки сохраняются для статистики
+            for player in self.players:
+                if len(player.ships) < 1:
+                    self.players.remove(player)
+                    self.dead_players.append(player)
+            if len(self.players) < 2:
+                is_not_battle_over = False
 
             # проверка здоровья
             self.check_on_is_ship_alive()
 
+            # TO DO
             # стрельба по случайному кораблю противника для первого игрока
             if (self.players[1].ships[0].health, self.players[1].ships[1].health) >= 0:
-                random_aim_on_enemy_by_1_player = randint(0,1)
+                random_aim_on_enemy_by_1_player = randint(0, 1)
             elif self.players[1].ships[0].health >= 0:
                 random_aim_on_enemy_by_1_player = 0
             else:
                 random_aim_on_enemy_by_1_player = 1
 
+            # TO DO
             # стрельба по случайному кораблю противника для второго игрока
             if (self.players[0].ships[0].health, self.players[0].ships[1].health) >= 0:
                 random_aim_on_enemy_by_2_player = randint(0, 1)
@@ -94,6 +105,7 @@ class Calculations:
             else:
                 random_aim_on_enemy_by_2_player = 1
 
+            # TO DO
             # попадание снаряда по цели
             self.players[0].ships[0].health -= self.players[1].ships[0].damage \
                                                + self.players[1].ships[1].damage
@@ -104,12 +116,20 @@ class Calculations:
             self.players[1].ships[1].health -= self.players[0].ships[0].damage \
                                                + self.players[0].ships[1].damage
 
+            # TO DO
             # проверка кто быстрее погибает по раундам
+            # статистика раунда
             print(self.players[0].ships[0].health, self.players[0].ships[1].health,
                   self.players[1].ships[0].health, self.players[1].ships[1].health)
 
-"""
+
+    def calculation(self):
+        self.state_of_battle(bool(1))
+        # self.battle_cycle()
+
+        # TO DO
         # выясняем победителя
+        # статистика игры
         self.state_of_battle(bool(0))
 
 
