@@ -30,7 +30,7 @@ class Calculations:
         for i in range(2):
             player = Player()
             players.append(player)
-            print("информация по игроку", i + 1, ":")
+            print("информация по только что созданному игроку", i + 1, ":")
             for j in range(2):
                 print("здоровье ", j + 1, "корабля ", players[i].ships[j].health)  # проверка доступа к объекту
             print("количество кораблей", i+1, "-го игрока =", len(players[i].ships), "шт.")  # проверка количества элементов списка
@@ -70,37 +70,64 @@ class Calculations:
                 # print(ship.health) # проверка доступа
             # print(len(player.ships)) # проверка доступа
 
+    def check_on_is_player_alive(self):
+        for player in self.players:
+            if len(player.ships) < 1:
+                self.players.remove(player)
+                self.dead_players.append(player)
+
+    def check_ships_health(self):
+        # это статистика раунда (до и после)
+        # здоровье перед стрельбой в начале каждого раунда
+        # и
+        # здоровье после стрельбы в конце каждого раунда
+        # отображается по одной функции
+        # TO DO
+        # в конце раунда подбитые корабли учитываются как неподбитые
+        player_counter = 0
+        for player in self.players:
+            print("информация по игроку", player_counter + 1, ":")
+            ship_counter = 0
+            for ship in player.ships:
+                print("здоровье ", ship_counter + 1, "корабля ",
+                      self.players[player_counter].ships[ship_counter].health)
+                ship_counter += 1
+            print("количество кораблей", player_counter + 1, "-го игрока =", len(self.players[player_counter].ships),
+                  "шт.")
+            player_counter += 1
+
     # стрельба по случайному кораблю противника
     # алгоритм рассчитан на двух игроков
     # TO DO
     # попробовать сделать для любого числа игроков
     def shoot(self):
-        # здоровье перед стрельбой
-        for player in self.players:
-            for ship in player.ships:
-                print(ship.health)
+        # здоровье перед стрельбой в начале каждого раунда
+        self.check_ships_health()
         # стрельба
         player_counter = 0
         for player in self.players:
-            print("статус игрока", player_counter + 2)
+            #print("статус игрока", player_counter + 2)
             #ship_counter = 0
             for ship in player.ships:
                 # TO DO
                 # отображение боя внутри раунда (через print) не работает как хотелось бы
+                # стоит ли отображать статистику до и после хода каждого корабля?
                 #print(self.players[player_counter + 1].ships[ship_counter].health, "hp корабля", ship_counter + 1, "в начале раунда")
                 #print(self.players[player_counter + 1].ships[ship_counter + 1].health, "hp корабля", ship_counter + 2, "в начале раунда")
                 self.players[player_counter + 1].ships[randint(0, len(self.players[player_counter + 1].ships))-1].health -= ship.damage
                 #print(self.players[player_counter + 1].ships[ship_counter].health, "hp корабля", ship_counter+1, "в конце раунда")
                 #print(self.players[player_counter + 1].ships[ship_counter+1].health, "hp корабля", ship_counter + 2, "в конце раунда")
             player_counter -= 1
-        # здоровье после стрельбы
-        for player in self.players:
-            for ship in player.ships:
-                print(ship.health)
+
+        # TO DO
+        # для статистики
+        # здоровье после стрельбы в конце каждого раунда
+        # работает не корректно (читай описание логики функции)
+        self.check_ships_health()
 
     # TO DO
-    # необходимо будет проверить логику цикла на производительность
-    # нужно добавить индефикацию Игрока чтобы понять кто победил из исходного множества игроков
+    # проверить логику цикла на производительность
+    # добавить индефикацию Игрока чтобы понять кто победил из исходного множества игроков
     def battle_cycle(self):
         # бой
         is_not_battle_over = True
@@ -110,26 +137,19 @@ class Calculations:
             # если игроков становится меньше 2 игра заканчивается
             # мертвые игроки сохраняются для статистики
             print("игровой раунд №:", game_round + 1)
+            # проверка 1
             # удаление подбитых кораблей
             self.check_on_is_ship_alive()
-            # удаление проигравших
-            for player in self.players:
-                if len(player.ships) < 1:
-                    self.players.remove(player)
-                    self.dead_players.append(player)
+            # проверка 2
+            # удаление проигравших игроков
+            self.check_on_is_player_alive()
+            # проверка 3
+            # выход из цикла == завершение игры после чего пойдет итоговая статистика
             if len(self.players) < 2:
-                # завершение игры после чего пойдет статистика
                 break
+            # механика боя
             self.shoot()
             game_round += 1
-
-            '''
-            # TO DO
-            # проверка кто быстрее погибает по раундам
-            # статистика раунда
-            print(self.players[0].ships[0].health, self.players[0].ships[1].health,
-                  self.players[1].ships[0].health, self.players[1].ships[1].health)
-            '''
 
 
     def calculation(self):
