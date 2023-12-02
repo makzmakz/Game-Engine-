@@ -1,20 +1,22 @@
 from random import randint
 
 class Ship:
-    def __init__(self):
+    def __init__(self, index_number):
         self.damage = randint(1,10)
         self.health = randint(50,100)
+        self.index_number = index_number
 
 class Player:
-    def __init__(self):
+    def __init__(self, index_number):
         self.ships = self.create_army()
         self.dead_ships = []
         self.total_ships = len(self.ships)
+        self.index_number = index_number
 
     def create_army(self):
         ships = []
-        for i in range(2):
-            ship = Ship()
+        for index_number in range(2):
+            ship = Ship(index_number)
             ships.append(ship)
             # print("здоровье ", i+1, "корабля ",  ships[i].health) #проверка доступа к объекту
         # print("количество кораблей", len(ships)) #проверка количества элементов списка
@@ -27,13 +29,13 @@ class Calculations:
 
     def create_players(self):
         players = []
-        for i in range(2):
-            player = Player()
+        for index_number in range(2):
+            player = Player(index_number)
             players.append(player)
-            print("информация по только что созданному игроку", i + 1, ":")
+            print("информация по только что созданному игроку", player.index_number + 1, ":")
             for j in range(2):
-                print("здоровье ", j + 1, "корабля ", players[i].ships[j].health)  # проверка доступа к объекту
-            print("количество кораблей", i+1, "-го игрока =", len(players[i].ships), "шт.")  # проверка количества элементов списка
+                print("здоровье ", j + 1, "корабля ", players[index_number].ships[j].health)  # проверка доступа к объекту
+            print("количество кораблей", player.index_number + 1, "-го игрока =", len(players[index_number].ships), "шт.")  # проверка количества элементов списка
         return players
 
     def state_of_battle(self, state_battle_counter: bool):
@@ -43,6 +45,7 @@ class Calculations:
         else:
             print("конечная сводка:")
             print("конечное здоровье: ")
+            print("игрок", self.players[0].index_number + 1, "победил")
         player_counter = 0
         for player in self.players:
             if player_counter == 0:
@@ -73,8 +76,10 @@ class Calculations:
     def check_on_is_player_alive(self):
         for player in self.players:
             if len(player.ships) < 1:
+                print("игрок", player.index_number + 1, "проиграл")
                 self.players.remove(player)
                 self.dead_players.append(player)
+
 
     def check_ships_health(self):
         # это статистика раунда (до и после)
