@@ -18,25 +18,27 @@ class Player:
         for index_number in range(2):
             ship = Ship(index_number)
             ships.append(ship)
-            # print("здоровье ", i+1, "корабля ",  ships[i].health) #проверка доступа к объекту
-        # print("количество кораблей", len(ships)) #проверка количества элементов списка
         return ships
 
 class Calculations:
     def __init__(self):
         self.players = self.create_players()
         self.dead_players = []
+        self.information()
 
     def create_players(self):
         players = []
         for index_number in range(2):
             player = Player(index_number)
             players.append(player)
-            print("информация по только что созданному игроку", player.index_number + 1, ":")
-            for j in range(2):
-                print("здоровье ", j + 1, "корабля ", players[index_number].ships[j].health)  # проверка доступа к объекту
-            print("количество кораблей", player.index_number + 1, "-го игрока =", len(players[index_number].ships), "шт.")  # проверка количества элементов списка
         return players
+
+    def information(self):
+        for player in self.players:
+            print("информация по только что созданному игроку", player.index_number + 1, ":")
+            for ship in player.ships:
+                print("здоровье ", ship.index_number + 1, "корабля ", self.players[player.index_number].ships[ship.index_number].health)
+            print("количество кораблей", player.index_number + 1, "-го игрока =", len(self.players[player.index_number].ships), "шт.")
 
     def state_of_battle(self, state_battle_counter: bool):
         if state_battle_counter is True:
@@ -162,7 +164,7 @@ class Calculations:
         self.battle_cycle()
 
         # TO DO
-        # выясняем победителя (нужна индексация Player)
+        # выясняем победителя
         # статистика игры
         self.state_of_battle(bool(0))
 
