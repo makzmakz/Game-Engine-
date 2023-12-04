@@ -1,9 +1,9 @@
 from random import randint
 
 class Ship:
-    def __init__(self, index_number): # TO DO чтобы проверить наверняка движок нужно прогнать неслько разных симуляций
-        self.damage = randint(1, 10)
-        self.health = randint(50, 100)
+    def __init__(self, index_number, min_damage, max_damage, min_hp, max_hp): # TO DO чтобы проверить наверняка движок нужно прогнать неслько разных симуляций
+        self.damage = randint(min_damage, max_damage)
+        self.health = randint(min_hp, max_hp)
         self.index_number = index_number
 
 class Player:
@@ -16,7 +16,11 @@ class Player:
     def create_army(self):
         ships = []
         for index_number in range(2):
-            ship = Ship(index_number)
+            min_damage = randint(1,4)
+            max_damage = randint(5,10)
+            min_hp = randint(5,10)
+            max_hp = randint(15,20)
+            ship = Ship(index_number, min_damage, max_damage, min_hp, max_hp)
             ships.append(ship)
         return ships
 
@@ -165,8 +169,9 @@ class Calculations:
 
 
 def main():
-    calculation = Calculations() # создаются игроки с армиями и начальная
-    calculation.calculation()
+    for simulation in range(10):
+        calculation = Calculations() # создаются игроки с армиями и начальная
+        calculation.calculation()
 
 
 if __name__ == "__main__":
