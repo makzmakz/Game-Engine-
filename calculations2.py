@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, choice
 
 class Ship:
     def __init__(self, index_number, min_damage, max_damage, min_hp, max_hp): # TO DO чтобы проверить наверняка движок нужно прогнать неслько разных симуляций
@@ -7,15 +7,16 @@ class Ship:
         self.index_number = index_number
 
 class Player:
-    def __init__(self, index_number):
-        self.ships = self.create_army()
+    def __init__(self, index_number, number_of_ships):
+        self.ships = self.create_army(number_of_ships)
         self.dead_ships = []
         self.total_ships = len(self.ships)
         self.index_number = index_number
+        self.enemy_players = []
 
-    def create_army(self):
+    def create_army(self, number_of_ships):
         ships = []
-        for index_number in range(2):
+        for index_number in range(number_of_ships):
             min_damage = randint(1,4)
             max_damage = randint(5,10)
             min_hp = randint(5,10)
@@ -25,15 +26,16 @@ class Player:
         return ships
 
 class Calculations:
-    def __init__(self):
-        self.players = self.create_players()
+    def __init__(self, number_of_players, number_of_ships):
+        self.players = self.create_players(number_of_players, number_of_ships)
         self.dead_players = []
         self.information()
+        self.validate_enemy_for_each_player()
 
-    def create_players(self):
+    def create_players(self, number_of_players, number_of_ships):
         players = []
-        for index_number in range(2):
-            player = Player(index_number)
+        for index_number in range(number_of_players):
+            player = Player(index_number, number_of_ships)
             players.append(player)
         return players
 
@@ -90,7 +92,7 @@ class Calculations:
             # TO DO
             # костыль удаляет несколько кораблей за раунд
             # внутренний цикл удаляет по одному кораблю за раунд
-            for i in range(2):
+            for i in range(len(player.ships)):
                 for ship in player.ships:
                     if ship.health < 1:
                         player.ships.remove(ship)
@@ -103,11 +105,38 @@ class Calculations:
         # TO DO
         # костыль удаляет нескольких игроков за раунд
         # внутренний цикл удаляет по одному игроку за раунд
-        for i in range(2):
+        for i in range(len(self.players)):
             for player in self.players:
                 if len(player.ships) < 1:
                     self.players.remove(player)
                     self.dead_players.append(player)
+
+    def validate_enemy_for_each_player(self):
+        # объявляем список врагов каждому игроку вначале игры
+        for player in self.players:
+            for i in range(len(self.players)):
+                player.enemy_players.append(self.players[i].index_number) # добавляем всех включая себя в список врагов
+            player.enemy_players.remove(player.index_number) # убираем самого себя из списка врагов
+
+    def verify_enemy_for_each_player_in_each_round(self):
+        # обновляем список врагов каждому игроку вначале каждого раунда
+
+        # не обновляет
+        """for player in self.players:
+            for dead in range(len(self.dead_players)):
+                for i in range(len(player.enemy_players)):
+                    for enemy in player.enemy_players:
+                        if len(self.dead_players) > 0 and enemy == self.dead_players[dead]:
+                            player.enemy_players.remove(enemy)"""
+
+        for player in self.players:
+            for enemy in player.enemy_players:
+                for i in range(len(self.dead_players)):
+                    for dead_player in self.dead_players:
+                        if enemy == dead_player.index_number:
+                            player.enemy_players.remove(enemy)
+
+
 
     # стрельба по случайному кораблю противника
     # алгоритм рассчитан на двух игроков
@@ -115,18 +144,21 @@ class Calculations:
     # TO DO
     # попробовать сделать для любого числа игроков
     def shoot(self):
-        player_counter = 0
         for player in self.players:
             for ship in player.ships:
+                if len(player.enemy_players) > 0:
+                    random_enemy = choice(player.enemy_players)
+                else:
+                    break
                 # TO DO
                 # отображение боя внутри раунда (через print) не работает как хотелось бы
                 # стоит ли отображать статистику до и после хода каждого корабля?
                 print("игрок", player.index_number + 1, "корабль", ship.index_number + 1, "целится")
-                self.information()
-                self.players[player_counter + 1].ships[randint(0, len(self.players[player_counter + 1].ships))-1].health -= ship.damage
+                #self.information()
+                self.players[random_enemy].ships[randint(0, len(self.players[random_enemy].ships))-1].health -= ship.damage
                 print("игрок", player.index_number + 1, "корабль", ship.index_number + 1, " выстрелил")
-                self.information()
-            player_counter -= 1
+                #self.information()
+
 
     # TO DO
     # проверить логику цикла на производительность
@@ -149,14 +181,17 @@ class Calculations:
             # выход из цикла == завершение игры после чего пойдет итоговая статистика
             if len(self.players) < 2:
                 break
+            # проверка 4
+            # обновление списка врагов
+            self.verify_enemy_for_each_player_in_each_round()
             # статистика перед стрельбой в начале каждого раунда
-            self.information()
+            #self.information()
             # механика боя
             self.shoot()
             # TO DO
             # статистика после стрельбы в конце каждого раунда
             # работает не корректно (читай описание логики функции)
-            self.information()
+            #self.information()
             game_round += 1
 
     def calculation(self):
@@ -170,8 +205,9 @@ class Calculations:
 
 def main():
     for simulation in range(10):
-        calculation = Calculations() # создаются игроки с армиями и начальная
-        calculation.calculation()
+        calculation = Calculations(number_of_players=3, number_of_ships=2) # создаются игроки с армиями
+        #calculation.calculation()
+        print(calculation)
 
 
 if __name__ == "__main__":
