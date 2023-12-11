@@ -53,11 +53,14 @@ class Calculations:
             # TO DO
             # использую костыль == не знаю как обойти задачу перечисления удаляющихся объектов из списка
             # недееспособные корабли удаляются из списка дееспособных
-            ship_index = 0
             for ship in player.ships:
-                print("здоровье ", ship.index_number + 1, "корабля ", self.players[player.index_number].ships[ship_index].health)
-                ship_index += 1
-            print("количество кораблей", player.index_number + 1, "-го игрока =", len(self.players[player.index_number].ships), "шт.")
+                for i in range(len(self.players)):
+                    for j in range(len(self.players[i].ships)):
+                        if player.index_number == self.players[i].index_number and ship.index_number == self.players[i].ships[j].index_number:
+                            print("здоровье ", ship.index_number + 1, "корабля ", self.players[i].ships[j].health)
+            for k in range(len(self.players)):
+                if player.index_number == self.players[k].index_number:
+                    print("количество кораблей", player.index_number + 1, "-го игрока =", len(self.players[k].ships), "шт.")
 
     # статистика начала и конца игры
     def state_of_battle(self, state_battle_counter: bool):
@@ -120,23 +123,12 @@ class Calculations:
 
     def verify_enemy_for_each_player_in_each_round(self):
         # обновляем список врагов каждому игроку вначале каждого раунда
-
-        # не обновляет
-        """for player in self.players:
-            for dead in range(len(self.dead_players)):
-                for i in range(len(player.enemy_players)):
-                    for enemy in player.enemy_players:
-                        if len(self.dead_players) > 0 and enemy == self.dead_players[dead]:
-                            player.enemy_players.remove(enemy)"""
-
         for player in self.players:
-            for enemy in player.enemy_players:
-                for i in range(len(self.dead_players)):
+            for i in range(len(player.enemy_players)):
+                for enemy in player.enemy_players:
                     for dead_player in self.dead_players:
                         if enemy == dead_player.index_number:
                             player.enemy_players.remove(enemy)
-
-
 
     # стрельба по случайному кораблю противника
     # алгоритм рассчитан на двух игроков
@@ -145,20 +137,19 @@ class Calculations:
     # попробовать сделать для любого числа игроков
     def shoot(self):
         for player in self.players:
-            for ship in player.ships:
-                if len(player.enemy_players) > 0:
-                    random_enemy = choice(player.enemy_players)
-                else:
-                    break
+            if len(player.enemy_players) > 0:
                 # TO DO
                 # отображение боя внутри раунда (через print) не работает как хотелось бы
                 # стоит ли отображать статистику до и после хода каждого корабля?
-                print("игрок", player.index_number + 1, "корабль", ship.index_number + 1, "целится")
-                #self.information()
-                self.players[random_enemy].ships[randint(0, len(self.players[random_enemy].ships))-1].health -= ship.damage
-                print("игрок", player.index_number + 1, "корабль", ship.index_number + 1, " выстрелил")
-                #self.information()
-
+                for ship in player.ships:
+                    random_enemy = choice(player.enemy_players)
+                    for i in range(len(self.players)):
+                        if random_enemy == self.players[i].index_number:
+                            print("игрок", player.index_number + 1, "корабль", ship.index_number + 1, "целится")
+                            self.information()
+                            self.players[i].ships[randint(0, len(self.players[i].ships))-1].health -= ship.damage
+                            print("игрок", player.index_number + 1, "корабль", ship.index_number + 1, " выстрелил")
+                            self.information()
 
     # TO DO
     # проверить логику цикла на производительность
@@ -185,13 +176,13 @@ class Calculations:
             # обновление списка врагов
             self.verify_enemy_for_each_player_in_each_round()
             # статистика перед стрельбой в начале каждого раунда
-            #self.information()
+            self.information()
             # механика боя
             self.shoot()
             # TO DO
             # статистика после стрельбы в конце каждого раунда
             # работает не корректно (читай описание логики функции)
-            #self.information()
+            self.information()
             game_round += 1
 
     def calculation(self):
@@ -205,9 +196,10 @@ class Calculations:
 
 def main():
     for simulation in range(10):
-        calculation = Calculations(number_of_players=3, number_of_ships=2) # создаются игроки с армиями
-        #calculation.calculation()
-        print(calculation)
+        calculation = Calculations(number_of_players=3, number_of_ships=3) # создаются игроки с армиями
+        calculation.calculation()
+
+
 
 
 if __name__ == "__main__":
