@@ -70,13 +70,14 @@ class Calculations:
         else:
             print("конечная сводка:")
             self.is_any_victorier()
-        for player in self.players:
-            if len(self.players) >= 2:
-                print("игрок", player.index_number + 1)
-            for ship in player.ships:
-                print("корабль", ship.index_number + 1, ship.health)
-            if player.index_number < len(self.players)-1:
-                print("против ")
+        if len(self.players) >= 1:
+            for player in self.players:
+                if len(self.players) >= 2:
+                    print("игрок", player.index_number + 1)
+                for ship in player.ships:
+                    print("корабль", ship.index_number + 1, ship.health)
+                if player.index_number < len(self.players)-1:
+                    print("против ")
 
     def is_any_victorier(self):
         if len(self.players) == 1: # TO DO костыльное условие
