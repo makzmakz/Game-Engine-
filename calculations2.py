@@ -123,12 +123,17 @@ class Calculations:
 
     def verify_enemy_for_each_player_in_each_round(self):
         # обновляем список врагов каждому игроку вначале каждого раунда
-        for player in self.players:
-            for i in range(len(player.enemy_players)):
-                for enemy in player.enemy_players:
-                    for dead_player in self.dead_players:
-                        if enemy == dead_player.index_number:
-                            player.enemy_players.remove(enemy)
+        if len(self.dead_players) > 0:
+            for player in self.players:
+                for i in range(len(player.enemy_players)):
+                    for enemy in player.enemy_players:
+                        for dead_player in self.dead_players:
+                            if enemy == dead_player.index_number:
+                                player.enemy_players.remove(enemy)
+        # TO DO
+        # удалит мертвых чтобы обновление списка врагов не запускалось по уже вычеркнутым из списка
+        # мне не нравится данный метод == он удаляет информацию по статистике
+        self.dead_players.clear()
 
     # стрельба по случайному кораблю противника
     # алгоритм рассчитан на двух игроков
@@ -196,7 +201,7 @@ class Calculations:
 
 def main():
     for simulation in range(10):
-        calculation = Calculations(number_of_players=3, number_of_ships=3) # создаются игроки с армиями
+        calculation = Calculations(number_of_players=20, number_of_ships=1) # создаются игроки с армиями
         calculation.calculation()
 
 
