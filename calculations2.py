@@ -131,10 +131,6 @@ class Calculations:
                         player.enemy_players.remove(dead_player.index_number)
 
     # стрельба по случайному кораблю противника
-    # алгоритм рассчитан на двух игроков
-    # 1ый бьет по 2му, 2ой по 1ому, 3ий будет бить по самому себе (3 игрока) или по 4му, 4ый будет бить по 3му
-    # TO DO
-    # попробовать сделать для любого числа игроков
     def shoot(self):
         for player in self.players:
             if len(player.enemy_players) > 0:
@@ -157,10 +153,17 @@ class Calculations:
         # бой
         is_not_battle_over = True
         game_round = 0
+        # TO DO
+        # проверки 1-4 в цикле while можно не выполнять в первом раунде
+        # если будут введены корректно количество игроков и кораблей
+        # что снизит загрузку перед началом симуляции
         while is_not_battle_over:
             # если игрок теряет все корабли он проигрывает
             # если игроков становится меньше 2 игра заканчивается
             # мертвые игроки сохраняются для статистики
+            # TO DO
+            # сделать итоговую статистику?
+            # (например по всем кораблям игроков кто отличился добиванием, нанесением ущерба)
             print("игровой раунд №:", game_round + 1)
             # проверка 1
             # удаление подбитых кораблей
@@ -186,17 +189,16 @@ class Calculations:
             game_round += 1
 
     def calculation(self):
+        # статистика начала игры
         self.state_of_battle(bool(1))
         self.battle_cycle()
-        # TO DO
-        # выясняем победителя
-        # статистика игры
+        # статистика конца игры
         self.state_of_battle(bool(0))
 
 
 def main():
     for simulation in range(10):
-        calculation = Calculations(number_of_players=20, number_of_ships=1) # создаются игроки с армиями
+        calculation = Calculations(number_of_players=4, number_of_ships=5) # создаются игроки с армиями
         calculation.calculation()
 
 
