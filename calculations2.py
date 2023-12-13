@@ -50,17 +50,9 @@ class Calculations:
         # в конце раунда подбитые корабли учитываются как неподбитые
         for player in self.players:
             print("информация по игроку", player.index_number + 1, ":")
-            # TO DO
-            # использую костыль == не знаю как обойти задачу перечисления удаляющихся объектов из списка
-            # недееспособные корабли удаляются из списка дееспособных
             for ship in player.ships:
-                for i in range(len(self.players)):
-                    for j in range(len(self.players[i].ships)):
-                        if player.index_number == self.players[i].index_number and ship.index_number == self.players[i].ships[j].index_number:
-                            print("здоровье ", ship.index_number + 1, "корабля ", self.players[i].ships[j].health)
-            for k in range(len(self.players)):
-                if player.index_number == self.players[k].index_number:
-                    print("количество кораблей", player.index_number + 1, "-го игрока =", len(self.players[k].ships), "шт.")
+                print("здоровье ", ship.index_number + 1, "корабля ", ship.health)
+            print("количество кораблей", player.index_number + 1, "-го игрока =", len(player.ships), "шт.")
 
     # статистика начала и конца игры
     def state_of_battle(self, state_battle_counter: bool):
