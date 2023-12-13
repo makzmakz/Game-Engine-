@@ -90,17 +90,19 @@ class Calculations:
         # проверка здоровья для стрельбы по боеспособной цели противника
         # уничтоженные корабли сохраняются для статистики
         for player in self.players:
+            # создаю свойство объекта в виде временного массива которое будет жить внутри тела цикла
+            player.dead_ships_for_this_function = []
             for ship in player.ships:
                 if ship.health < 1:
                     print("игрок", player.index_number + 1, "корабль", ship.index_number + 1, "уничтожен")
-            # TO DO
-            # костыль удаляет несколько кораблей за раунд
-            # внутренний цикл удаляет по одному кораблю за раунд
-            for i in range(len(player.ships)):
-                for ship in player.ships:
-                    if ship.health < 1:
-                        player.ships.remove(ship)
-                        player.dead_ships.append(ship)
+                    player.dead_ships.append(ship)
+                    player.dead_ships_for_this_function.append(ship)
+            for dead_ship in player.dead_ships_for_this_function:
+                player.ships.remove(dead_ship)
+            # данный метод очищает уничтоженные корабли чтобы они не накапливались
+            #player.dead_ships_for_this_function.clear()
+            # данный метод высвобождает память (наверное)
+            del player.dead_ships_for_this_function
 
     def check_on_is_player_alive(self):
         for player in self.players:
