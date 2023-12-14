@@ -100,14 +100,12 @@ class Calculations:
         for player in self.players:
             if len(player.ships) < 1:
                 print("игрок", player.index_number + 1, "проиграл")
+                self.dead_players.append(player)
         # TO DO
-        # костыль удаляет нескольких игроков за раунд
-        # внутренний цикл удаляет по одному игроку за раунд
-        for i in range(len(self.players)):
-            for player in self.players:
-                if len(player.ships) < 1:
-                    self.players.remove(player)
-                    self.dead_players.append(player)
+        # с увеличением числа игроков проверка сильно замедляется так мертвые игроки накапливаются для статистики
+        for dead_player in self.dead_players:
+            if dead_player in self.players:
+                self.players.remove(dead_player)
 
     def validate_enemy_for_each_player(self):
         # объявляем список врагов каждому игроку вначале игры
@@ -192,7 +190,7 @@ class Calculations:
 
 def main():
     for simulation in range(10):
-        calculation = Calculations(number_of_players=4, number_of_ships=5) # создаются игроки с армиями
+        calculation = Calculations(number_of_players=20, number_of_ships=1) # создаются игроки с армиями
         calculation.calculation()
 
 
