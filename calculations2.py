@@ -29,8 +29,11 @@ class Calculations:
     def __init__(self, number_of_players, number_of_ships):
         self.players = self.create_players(number_of_players, number_of_ships)
         self.dead_players = []
+        self.dead_players_in_rounds = []
+        self.dead_players_in_this_round = []
         self.information()
         self.validate_enemy_for_each_player()
+        self.game_round = 0
 
     def create_players(self, number_of_players, number_of_ships):
         players = []
@@ -101,9 +104,20 @@ class Calculations:
             if len(player.ships) < 1:
                 print("игрок", player.index_number + 1, "проиграл")
                 self.dead_players.append(player)
+        # запись трупов нарастающим итогом
+        # но почему для этого нужно прописывать list
+        self.dead_players_in_rounds.append(list(self.dead_players))
         # TO DO
-        # с увеличением числа игроков проверка сильно замедляется так мертвые игроки накапливаются для статистики
-        for dead_player in self.dead_players:
+        # запись трупов по раундам
+        """self.dead_players_in_this_round.append(list(self.dead_players))
+        for i in range(len(self.dead_players_in_rounds)):
+            for j in range(i+1, i+1):
+                for old_dead in self.dead_players_in_rounds[i]:
+                    if old_dead in self.dead_players_in_rounds[j]:
+                        self.dead_players_in_this_round[j].remove(old_dead)"""
+        # TO DO
+        # с увеличением числа игроков проверка сильно замедляется т.к. мертвые игроки накапливаются для статистики
+        for dead_player in self.dead_players_in_rounds[self.game_round]:
             if dead_player in self.players:
                 self.players.remove(dead_player)
 
@@ -144,7 +158,7 @@ class Calculations:
     def battle_cycle(self):
         # бой
         is_not_battle_over = True
-        game_round = 0
+        #game_round = 0
         # TO DO
         # проверки 1-4 в цикле while можно не выполнять в первом раунде
         # если будут введены корректно количество игроков и кораблей
@@ -156,7 +170,7 @@ class Calculations:
             # TO DO
             # сделать итоговую статистику?
             # (например по всем кораблям игроков кто отличился добиванием, нанесением ущерба)
-            print("игровой раунд №:", game_round + 1)
+            print("игровой раунд №:", self.game_round + 1)
             # проверка 1
             # удаление подбитых кораблей
             self.check_on_is_ship_alive()
@@ -178,7 +192,7 @@ class Calculations:
             # статистика после стрельбы в конце каждого раунда
             # работает не корректно (читай описание логики функции)
             self.information()
-            game_round += 1
+            self.game_round += 1
 
     def calculation(self):
         # статистика начала игры
